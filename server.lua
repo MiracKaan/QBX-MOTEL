@@ -54,7 +54,7 @@ end
 -- İLK SPAWN / MULTICHAR SONRASI MOTEL’E ATMA
 ----------------------------------------------------------------
 
-RegisterNetEvent('qbx-motel:server:FirstSpawn', function()
+--[[ RegisterNetEvent('qbx-motel:server:FirstSpawn', function()
     local src = source
     local Player = exports.qbx_core:GetPlayer(src)
     if not Player then return end
@@ -75,6 +75,42 @@ RegisterNetEvent('qbx-motel:server:FirstSpawn', function()
 
     TriggerClientEvent('qbx-motel:client:TeleportInside', src)
     TriggerClientEvent("illenium-appearance:client:openOutfitMenu", src)
+end)
+ ]]
+
+ RegisterNetEvent('qbx-motel:server:FirstSpawn', function()
+    local src = source
+    local Player = exports.qbx_core:GetPlayer(src)
+    if not Player then return end
+
+    local cid = Player.PlayerData.citizenid
+
+    -- Bu karakter daha önce spawn oldu mu?
+    local alreadySpawned = Player.PlayerData.metadata.motelFirstSpawn
+
+    -- Eğer metadata yoksa → bu yeni bir karakterdir
+    if not alreadySpawned then
+        print("[MOTEL] İlk defa spawn oluyor → karakter motel odasına gönderiliyor:", cid)
+
+        -- Bucket ataması
+        PutPlayerInNewBucket(src)
+
+        -- Stash oluştur
+        local stashId = EnsureMotelStash(src)
+
+        -- Teleport
+        TriggerClientEvent('qbx-motel:client:TeleportInside', src)
+
+        -- Karakter yaratma menüsü aç
+       -- TriggerClientEvent("illenium-appearance:client:openOutfitMenu", src)
+
+        -- ARTIK BU KARAKTER İLK SPAWN DEĞİL
+        Player.Functions.SetMetaData("motelFirstSpawn", true)
+        return
+    end
+
+    -- Eğer metadata varsa → daha önce bu karakter spawn edilmiştir
+    print("[MOTEL] Bu karakter daha önce spawn olmuş → last location kullanılacak:", cid)
 end)
 
 
