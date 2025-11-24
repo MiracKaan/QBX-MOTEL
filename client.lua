@@ -23,20 +23,10 @@ end
 -- MULTICHAR / PLAYER LOADED
 ----------------------------------------------------------------
 
-RegisterNetEvent(Config.PlayerLoadedEvent, function()
-    if not firstSpawn then return end
-    firstSpawn = false
-
-    -- Son konumda doğma sistemi qbx_core tarafından otomatik yapılır
-    -- Sadece server'a ilk spawn bildir
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     TriggerServerEvent('qbx-motel:server:FirstSpawn')
 end)
 
-
-RegisterNetEvent(Config.PlayerUnloadEvent, function()
-    -- İstersen burada client taraflı state sıfırlayabilirsin
-    firstSpawn = true
-end)
 
 CreateThread(function()
     for _, m in pairs(Config.Motels) do
